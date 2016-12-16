@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.coolweather.coolweather.db.City;
 import com.coolweather.coolweather.db.County;
 import com.coolweather.coolweather.db.Province;
+import com.coolweather.coolweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,14 +20,6 @@ import okhttp3.Request;
  */
 
 public class Utility {
-    public static void sendOkHttpRequest(String address,okhttp3.Callback callback){
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(address)
-                .build();
-        client.newCall(request).enqueue(callback);
-    }
-
     /***
      * 解析和处理服务器返回的json
      * @param response
@@ -100,5 +94,22 @@ public class Utility {
             }
         }
         return  false;
+    }
+
+    /***
+     * 将返回的JSON数据解析成Weather实体类
+     * @param response
+     * @return
+     */
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
