@@ -95,10 +95,10 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVAL_CITY) {
                     selectedCity = cityList.get(position);
                     quertCounties();
-                }else if (currentLevel==LEVAL_COUNTY){
+                } else if (currentLevel == LEVAL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
                     Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
+                    intent.putExtra("weather_id", weatherId);
                     startActivity(intent);
                     getActivity().finish();
                 }
@@ -187,32 +187,34 @@ public class ChooseAreaFragment extends Fragment {
 
     /***
      * 根据传入的地址和类型从服务器上查询省市县级数据
+     *
      * @param address
      * @param type
      */
     private void queryFrommServer(String address, final String type) {
+        showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
                 boolean result = false;
-                if ("province".equals(type)){
+                if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(responseText);
-                }else if ("city".equals(type)){
-                    result = Utility.handleCityResponse(responseText,selectedProvince.getId());
-                }else if ("county".equals(type)){
-                    result = Utility.handleCountyResponse(responseText,selectedCity.getId());
+                } else if ("city".equals(type)) {
+                    result = Utility.handleCityResponse(responseText, selectedProvince.getId());
+                } else if ("county".equals(type)) {
+                    result = Utility.handleCountyResponse(responseText, selectedCity.getId());
                 }
-                if (result){
+                if (result) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             closeProgressDialog();
-                            if ("province".equals(type)){
+                            if ("province".equals(type)) {
                                 queryProvinces();
-                            }else if ("city".equals(type)){
+                            } else if ("city".equals(type)) {
                                 queryCities();
-                            }else if ("county".equals(type)){
+                            } else if ("county".equals(type)) {
                                 quertCounties();
                             }
                         }
@@ -226,7 +228,7 @@ public class ChooseAreaFragment extends Fragment {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(getContext(),"加载失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -236,7 +238,7 @@ public class ChooseAreaFragment extends Fragment {
     /***
      * 显示进度对话框
      */
-    private void showProgressDialog(){
+    private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("正在加载...");
@@ -247,7 +249,7 @@ public class ChooseAreaFragment extends Fragment {
     /***
      * 关闭进度对话框
      */
-    private void closeProgressDialog(){
+    private void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
